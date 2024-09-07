@@ -5,6 +5,11 @@ using TMPro;
 public class ClickerGame : MonoBehaviour
 {
     public Button clickButton; // Reference to the button
+    public Button coinButton; // Reference to the button
+    public Button brickButton; // Reference to the button
+    public Button marioButton; // Reference to the button
+    public Button marioPauseButton; // Reference to the button
+    
     public TextMeshProUGUI scoreText; // Reference to TextMeshPro for score text
     public TextMeshProUGUI multiplierText; // Reference to TextMeshPro for multiplier text
     public Slider countdownBar; // Reference to the countdown bar (Slider)
@@ -15,6 +20,7 @@ public class ClickerGame : MonoBehaviour
     public Color endColor = Color.red;     // Color at high multiplier
 
     private int score = 0;      // Variable to track the score
+    private int displayedScore = 0; // Displayed score for smooth transition
     private int clickCount = 0; // Variable to track the number of clicks
     private int multiplier = 1; // Score multiplier starts at 1
     private float idleTime = 0f; // Timer to track idle time
@@ -61,15 +67,20 @@ public class ClickerGame : MonoBehaviour
                 ResetMultiplier();
             }
         }
+
+        // Smoothly transition the displayed score to the actual score
+        if (displayedScore < score)
+        {
+            displayedScore += Mathf.CeilToInt((score - displayedScore) * Time.deltaTime * 3f); // Adjust the speed of counting up
+            UpdateScoreText();
+        }
     }
 
     // Method called when the button is clicked
     void OnClick()
     {
         clickCount++;              // Increment the number of clicks
-        score += multiplier;       // Increment the score by the multiplier
-        UpdateScoreText();         // Update the score text
-
+        score += multiplier*10;       // Increment the score by the multiplier
         idleTime = 0f; // Reset idle timer when the player clicks
         UpdateIdleTime(); // Update the idle timer according to the multiplier
         countdownBar.value = maxIdleTime; // Reset the countdown bar
@@ -94,23 +105,34 @@ public class ClickerGame : MonoBehaviour
         // Reset the color to initial state
         currentColor = startColor;
         UpdateSliderColor();
+
+        marioPauseButton.onClick.Invoke();
+
     }
 
     // Method to update the score display
     void UpdateScoreText()
     {
-        scoreText.text = "Score: " + score;
+        scoreText.text = "Score: " + displayedScore;
     }
 
     // Method to update the multiplier display
     void UpdateMultiplierText()
     {
-        if(multiplier > 1){
-        multiplierText.text = "Multiplier: x" + multiplier;
+        if(multiplier > 1)
+        {
+            multiplierText.text = "x" + multiplier;
+            brickButton.onClick.Invoke();
         }
-        else{
-            multiplierText.text = " ";
+        if (multiplier > 2)
+        {
+            marioButton.onClick.Invoke();
         }
+        else
+        {
+            multiplierText.text = "";
+        }
+        coinButton.onClick.Invoke();
     }
 
     // Method to adjust the reset timer based on the multiplier
@@ -134,5 +156,10 @@ public class ClickerGame : MonoBehaviour
         // Smoothly transition to the target color
         currentColor = Color.Lerp(currentColor, targetColor, Time.deltaTime * 5f); // Adjust smoothness with the multiplier
         countdownBarFill.color = currentColor;
+    }
+
+    public void ResetScore()
+    {
+        scoreText.text = "";
     }
 }
