@@ -41,6 +41,8 @@ public class ClickerGame : MonoBehaviour
 
     void Start()
     {
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 120;
         // Add a listener to call the OnClick method when the button is pressed
         clickButton.onClick.AddListener(OnClick);
 
