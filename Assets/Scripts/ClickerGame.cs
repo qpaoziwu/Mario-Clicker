@@ -9,6 +9,13 @@ public class ClickerGame : MonoBehaviour
     public Button brickButton; // Reference to the button
     public Button marioButton; // Reference to the button
     public Button marioPauseButton; // Reference to the button
+    public AudioSource audioSource;
+    public AudioClip combo2SFX;
+    public AudioClip combo5SFX;
+    public AudioClip combo10SFX;
+    public AudioClip coinSFX;
+    
+
     
     public TextMeshProUGUI scoreText; // Reference to TextMeshPro for score text
     public TextMeshProUGUI multiplierText; // Reference to TextMeshPro for multiplier text
@@ -19,8 +26,8 @@ public class ClickerGame : MonoBehaviour
     public Color startColor = Color.green; // Color at low multiplier
     public Color endColor = Color.red;     // Color at high multiplier
 
-    private int score = 0;      // Variable to track the score
-    private int displayedScore = 0; // Displayed score for smooth transition
+    [SerializeField]private  int score = 0;      // Variable to track the score
+    [SerializeField]private int displayedScore = 0; // Displayed score for smooth transition
     private int clickCount = 0; // Variable to track the number of clicks
     private int multiplier = 1; // Score multiplier starts at 1
     private float idleTime = 0f; // Timer to track idle time
@@ -84,6 +91,7 @@ public class ClickerGame : MonoBehaviour
         idleTime = 0f; // Reset idle timer when the player clicks
         UpdateIdleTime(); // Update the idle timer according to the multiplier
         countdownBar.value = maxIdleTime; // Reset the countdown bar
+        audioSource.PlayOneShot(coinSFX);
 
         // Check if the number of clicks is divisible by 10
         if (clickCount % 10 == 0)
@@ -108,12 +116,16 @@ public class ClickerGame : MonoBehaviour
 
         marioPauseButton.onClick.Invoke();
 
+
     }
 
     // Method to update the score display
     void UpdateScoreText()
     {
+        if (score > 0)
+        {
         scoreText.text = "Score: " + displayedScore;
+        }
     }
 
     // Method to update the multiplier display
@@ -124,11 +136,20 @@ public class ClickerGame : MonoBehaviour
             multiplierText.text = "x" + multiplier;
             brickButton.onClick.Invoke();
         }
-        if (multiplier > 2)
+        if (multiplier > 2 && multiplier < 6)
         {
             marioButton.onClick.Invoke();
+            audioSource.PlayOneShot(combo2SFX);
         }
-        else
+        if (multiplier > 5 && multiplier < 10)
+        {
+            audioSource.PlayOneShot(combo5SFX);
+        }
+        if (multiplier > 9)
+        {
+            audioSource.PlayOneShot(combo10SFX);
+        }
+        if(multiplier < 2)
         {
             multiplierText.text = "";
         }
@@ -160,6 +181,8 @@ public class ClickerGame : MonoBehaviour
 
     public void ResetScore()
     {
+        score = 0;
+        displayedScore = 0;
         scoreText.text = "";
     }
 }
