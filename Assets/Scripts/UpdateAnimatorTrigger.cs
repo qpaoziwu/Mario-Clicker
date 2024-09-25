@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
 
 public class UpdateAnimatorTrigger : MonoBehaviour
 {
@@ -8,6 +9,14 @@ public class UpdateAnimatorTrigger : MonoBehaviour
     public Image targetImage;
     public Animator thisAnimator;
     public Animator targetAnimator;
+
+    public TMP_Text TitleText;
+
+    void UpdateTitleText()
+    {
+        TitleText.text = thisSprite.name;
+
+    }
 
     void UpdateTargetImage()
     {
@@ -20,6 +29,7 @@ public class UpdateAnimatorTrigger : MonoBehaviour
         }
         
         targetImage.sprite = thisSprite;
+        UpdateTitleText();
     }
     void TriggerTargetAnimatorSelected()
     {
