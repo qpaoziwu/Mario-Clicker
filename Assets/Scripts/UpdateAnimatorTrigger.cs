@@ -93,5 +93,9 @@ public class UpdateAnimatorTrigger : MonoBehaviour
         
         targetAnimator.SetBool("Pressed", true);
     }
+    void TriggerTargetAnimatorWithString(string state)
+    {
+        targetAnimator.SetBool(state, true);
+    }
 
 }
